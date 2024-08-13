@@ -33,6 +33,21 @@ Base.@propagate_inbounds function _clenshaw_first!(A, B, C, X, c, f::AbstractVec
     bn2
 end
 
+
+# FillArrays
+Base.@propagate_inbounds function _clenshaw_next!(n, A::AbstractFill, ::Zeros, C::Ones, X::AbstractMatrix, c, f::AbstractVector, bn1::AbstractVector{T}, bn2::AbstractVector{T}) where T
+    muladd!(getindex_value(A), X, bn1, -one(T), bn2)
+    bn2 .+= c[n] .* f
+    bn2
+end
+
+Base.@propagate_inbounds function _clenshaw_next!(n, A, ::Zeros, C, X::AbstractMatrix, c, f::AbstractVector, bn1::AbstractVector{T}, bn2::AbstractVector{T}) where T
+    muladd!(A[n], X, bn1, -C[n+1], bn2)
+    bn2 .+= c[n] .* f
+    bn2
+end
+
+
 _clenshaw_op(::AbstractBandedLayout, Z, N) = BandedMatrix(Z, (N-1,N-1))
 
 function clenshaw(c::AbstractVector, A::AbstractVector, B::AbstractVector, C::AbstractVector, X::AbstractMatrix)
@@ -105,11 +120,6 @@ Clenshaw(c::AbstractVector{T}, A::AbstractVector, B::AbstractVector, C::Abstract
     Clenshaw{T,typeof(c),typeof(A),typeof(B),typeof(C),typeof(X)}(c, A, B, C, X, p0)
 
 Clenshaw(c::Number, A, B, C, X, p) = Clenshaw([c], A, B, C, X, p)
-
-function Clenshaw(a::AbstractQuasiVector, X::AbstractQuasiMatrix)
-    P,c = arguments(a)
-    Clenshaw(paddeddata(c), recurrencecoefficients(P)..., jacobimatrix(X), _p0(P))
-end
 
 copy(M::Clenshaw) = M
 size(M::Clenshaw) = size(M.X)
