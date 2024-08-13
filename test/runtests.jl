@@ -1,4 +1,4 @@
-using RecurrenceRelationships, ClassicalOrthogonalPolynomials, Test
+using RecurrenceRelationshipArrays, ClassicalOrthogonalPolynomials, Test
 using ClassicalOrthogonalPolynomials: recurrencecoefficients
 
 
