@@ -15,6 +15,7 @@ RecurrenceRelationships = "807425ed-42ea-44d6-a357-6771516d7b2c"
 [compat]
 BandedMatrices = "1"
 ClassicalOrthogonalPolynomials = "0.13"
+FillArrays = "1"
 InfiniteArrays = "0.14"
 LazyArrays = "2"
 SpecialFunctions = "1, 2"
