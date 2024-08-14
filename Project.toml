@@ -13,6 +13,7 @@ LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 RecurrenceRelationships = "807425ed-42ea-44d6-a357-6771516d7b2c"
 
 [compat]
+ArrayLayouts = "1"
 BandedMatrices = "1"
 ClassicalOrthogonalPolynomials = "0.13"
 FillArrays = "1"
