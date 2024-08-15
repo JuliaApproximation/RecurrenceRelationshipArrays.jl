@@ -23,6 +23,17 @@ const RecurrenceMatrix{T, Z<:AbstractVector, A<:AbstractVector, B<:AbstractVecto
 
 RecurrenceArray(z, A, B, C, data::Array{T,N}, datasize, p0, p1) where {T,N} = RecurrenceArray{T,N,typeof(z),typeof(A),typeof(B),typeof(C)}(z, A, B, C, data, datasize, p0, p1, T[])
 
+function initiateforwardrecurrence(N, A, B, C, x, μ)
+    T = promote_type(eltype(A), eltype(B), eltype(C), typeof(x))
+    p0 = convert(T, μ)
+    N == 0 && return zero(T), p0
+    p1 = convert(T, muladd(A[1],x,B[1])*p0)
+    @inbounds for n = 2:N
+        p1,p0 = forwardrecurrence_next(n, A, B, C, x, p0, p1),p1
+    end
+    p0,p1
+end
+
 function RecurrenceArray(z::Number, (A,B,C), data::AbstractVector{T}) where T
     N = length(data)
     p0, p1 = initiateforwardrecurrence(N, A, B, C, z, one(z))
@@ -83,12 +94,12 @@ function resizedata!(K::RecurrenceArray, m, n...)
                 p0, p1 = K.p0[j], K.p1[j]
                 k = ν
                 while abs(p1) < tol*k && k < m
-                    p1,p0 = _forwardrecurrence_next(k, A, B, C, z, p0, p1),p1
+                    p1,p0 = forwardrecurrence_next(k, A, B, C, z, p0, p1),p1
                     k += 1
                 end
                 K.p0[j], K.p1[j] = p0, p1
                 if k > ν
-                    _forwardrecurrence!(view(K.data,:,j), A, B, C, z, ν:k)
+                    forwardrecurrence_partial!(view(K.data,:,j), A, B, C, z, ν:k)
                 end
                 if k < m
                     if K isa AbstractVector

@@ -2,13 +2,13 @@
 # Operator clenshaw
 ###
 
-Base.@propagate_inbounds function _clenshaw_next!(n, A::AbstractFill, ::Zeros, C::Ones, x::AbstractMatrix, c, bn1::AbstractMatrix{T}, bn2::AbstractMatrix{T}) where T
+Base.@propagate_inbounds function clenshaw_next!(n, A::AbstractFill, ::Zeros, C::Ones, x::AbstractMatrix, c, bn1::AbstractMatrix{T}, bn2::AbstractMatrix{T}) where T
     muladd!(getindex_value(A), x, bn1, -one(T), bn2)
     view(bn2,band(0)) .+= c[n]
     bn2
 end
 
-Base.@propagate_inbounds function _clenshaw_next!(n, A::AbstractVector, ::Zeros, C::AbstractVector, x::AbstractMatrix, c, bn1::AbstractMatrix{T}, bn2::AbstractMatrix{T}) where T
+Base.@propagate_inbounds function clenshaw_next!(n, A::AbstractVector, ::Zeros, C::AbstractVector, x::AbstractMatrix, c, bn1::AbstractMatrix{T}, bn2::AbstractMatrix{T}) where T
     muladd!(A[n], x, bn1, -C[n+1], bn2)
     view(bn2,band(0)) .+= c[n]
     bn2
@@ -29,7 +29,7 @@ Base.@propagate_inbounds function _clenshaw_first!(A, ::Zeros, C, X, c, f::Abstr
     bn2
 end
 
-Base.@propagate_inbounds function _clenshaw_next!(n, A::AbstractVector, B::AbstractVector, C::AbstractVector, x::AbstractMatrix, c, bn1::AbstractMatrix{T}, bn2::AbstractMatrix{T}) where T
+Base.@propagate_inbounds function clenshaw_next!(n, A::AbstractVector, B::AbstractVector, C::AbstractVector, x::AbstractMatrix, c, bn1::AbstractMatrix{T}, bn2::AbstractMatrix{T}) where T
     # bn2 .= B[n] .* bn1 .- C[n+1] .* bn2
     lmul!(-C[n+1], bn2)
     LinearAlgebra.axpy!(B[n], bn1, bn2)
@@ -40,7 +40,7 @@ end
 
 # Operator * f Clenshaw
 
-Base.@propagate_inbounds function _clenshaw_next!(n, A, B, C, X::AbstractMatrix, c, f::AbstractVector, bn1::AbstractVector{T}, bn2::AbstractVector{T}) where T
+Base.@propagate_inbounds function clenshaw_next!(n, A, B, C, X::AbstractMatrix, c, f::AbstractVector, bn1::AbstractVector{T}, bn2::AbstractVector{T}) where T
     bn2 .= B[n] .* bn1 .- C[n+1] .* bn2 .+ c[n] .* f
     muladd!(A[n], X, bn1, one(T), bn2)
     bn2
@@ -62,13 +62,13 @@ end
 
 
 # FillArrays
-Base.@propagate_inbounds function _clenshaw_next!(n, A::AbstractFill, ::Zeros, C::Ones, X::AbstractMatrix, c, f::AbstractVector, bn1::AbstractVector{T}, bn2::AbstractVector{T}) where T
+Base.@propagate_inbounds function clenshaw_next!(n, A::AbstractFill, ::Zeros, C::Ones, X::AbstractMatrix, c, f::AbstractVector, bn1::AbstractVector{T}, bn2::AbstractVector{T}) where T
     muladd!(getindex_value(A), X, bn1, -one(T), bn2)
     bn2 .+= c[n] .* f
     bn2
 end
 
-Base.@propagate_inbounds function _clenshaw_next!(n, A, ::Zeros, C, X::AbstractMatrix, c, f::AbstractVector, bn1::AbstractVector{T}, bn2::AbstractVector{T}) where T
+Base.@propagate_inbounds function clenshaw_next!(n, A, ::Zeros, C, X::AbstractMatrix, c, f::AbstractVector, bn1::AbstractVector{T}, bn2::AbstractVector{T}) where T
     muladd!(A[n], X, bn1, -C[n+1], bn2)
     bn2 .+= c[n] .* f
     bn2
@@ -108,7 +108,7 @@ function _clenshaw_op!(c, A, B, C, X, bn1, bn2)
     N == 1 && return bn1
     @inbounds begin
         for n = N-1:-1:2
-            bn1,bn2 = _clenshaw_next!(n, A, B, C, X, c, bn1, bn2),bn1
+            bn1,bn2 = clenshaw_next!(n, A, B, C, X, c, bn1, bn2),bn1
         end
         bn1 = _clenshaw_first!(A, B, C, X, c, bn1, bn2)
     end
@@ -120,7 +120,7 @@ function _clenshaw_op!(c, A, B, C, X, f::AbstractVector, bn1, bn2)
     N == 1 && return bn1
     @inbounds begin
         for n = N-1:-1:2
-            bn1,bn2 = _clenshaw_next!(n, A, B, C, X, c, f, bn1, bn2),bn1
+            bn1,bn2 = clenshaw_next!(n, A, B, C, X, c, f, bn1, bn2),bn1
         end
         bn1 = _clenshaw_first!(A, B, C, X, c, f, bn1, bn2)
     end

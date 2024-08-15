@@ -6,7 +6,7 @@ import FillArrays: AbstractFill
 import BandedMatrices: AbstractBandedMatrix
 import InfiniteArrays: OneToInf, AbstractInfUnitRange
 import ArrayLayouts: MatMulVecAdd
-import RecurrenceRelationships: initiateforwardrecurrence, _forwardrecurrence_next, _forwardrecurrence!
+import RecurrenceRelationships: forwardrecurrence_next, forwardrecurrence_partial!
 export RecurrenceArray
 
 const LazyArraysBandedMatricesExt = Base.get_extension(LazyArrays, :LazyArraysBandedMatricesExt)
