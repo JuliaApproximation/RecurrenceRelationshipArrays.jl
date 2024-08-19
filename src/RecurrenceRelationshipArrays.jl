@@ -7,7 +7,7 @@ import BandedMatrices: AbstractBandedMatrix
 import InfiniteArrays: OneToInf, AbstractInfUnitRange
 import ArrayLayouts: MatMulVecAdd
 import RecurrenceRelationships: forwardrecurrence_next, forwardrecurrence_partial!
-export RecurrenceArray
+export RecurrenceArray, Clenshaw
 
 const LazyArraysBandedMatricesExt = Base.get_extension(LazyArrays, :LazyArraysBandedMatricesExt)
 const AbstractLazyBandedLayout = LazyArraysBandedMatricesExt.AbstractLazyBandedLayout

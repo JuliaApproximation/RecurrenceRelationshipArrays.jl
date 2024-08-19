@@ -1,6 +1,9 @@
 using RecurrenceRelationshipArrays, ClassicalOrthogonalPolynomials, Test
 using ClassicalOrthogonalPolynomials: recurrencecoefficients
 
+@testset "Clenshaw" begin
+    C = Clenshaw(
+end
 
 @testset "RecurrenceArray" begin
     @testset "RecurrenceVector" begin
