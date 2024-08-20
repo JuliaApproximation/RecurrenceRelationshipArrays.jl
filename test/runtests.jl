@@ -1,4 +1,4 @@
-using RecurrenceRelationshipArrays, RecurrenceRelationships, FillArrays, LazyArrays, InfiniteArrays, BandedMatrices, Test
+using RecurrenceRelationshipArrays, RecurrenceRelationships, FillArrays, LazyArrays, InfiniteArrays, BandedMatrices, LinearAlgebra, Test
 
 rec_T = Vcat(1, Fill(2,∞)), Zeros{Int}(∞), Ones{Int}(∞)
 rec_U = Fill(2,∞), Zeros{Int}(∞), Ones{Int}(∞)
