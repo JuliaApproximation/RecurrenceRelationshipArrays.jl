@@ -129,10 +129,11 @@ end
 
 
 """
-    Clenshaw(a, X)
+    Clenshaw(c, A, B, C, X, p0=1)
 
-represents the operator `a(X)` where a is a polynomial.
-Here `a` is to stored as a quasi-vector.
+represents the operator `a(X)` where a is a polynomial
+where `a` is represented by coefficients `c` in a basis dictated by the recurrence coefficients
+`A`, `B`, and `C`. `p0` is the initial condition in the recurrence relationship.
 """
 struct Clenshaw{T, Coefs<:AbstractVector, AA<:AbstractVector, BB<:AbstractVector, CC<:AbstractVector, Jac<:AbstractMatrix} <: AbstractBandedMatrix{T}
     c::Coefs
@@ -143,8 +144,13 @@ struct Clenshaw{T, Coefs<:AbstractVector, AA<:AbstractVector, BB<:AbstractVector
     p0::T
 end
 
-Clenshaw(c::AbstractVector{T}, A::AbstractVector, B::AbstractVector, C::AbstractVector, X::AbstractMatrix{T}, p0::T) where T = 
+Clenshaw(c::AbstractVector{T}, A::AbstractVector, B::AbstractVector, C::AbstractVector, X::AbstractMatrix{T}, p0=one(T)) where T = 
     Clenshaw{T,typeof(c),typeof(A),typeof(B),typeof(C),typeof(X)}(c, A, B, C, X, p0)
+
+function Clenshaw(c::AbstractVector, A::AbstractVector, B::AbstractVector, C::AbstractVector, X::AbstractMatrix, p0...)
+    T = promote_type(eltype(c), eltype(X))
+    Clenshaw(convert(AbstractVector{T}, c), A, B, C, convert(AbstractMatrix{T},X), p0...)
+end
 
 Clenshaw(c::Number, A, B, C, X, p) = Clenshaw([c], A, B, C, X, p)
 
@@ -171,7 +177,7 @@ function _BandedMatrix(::ClenshawLayout, V::SubArray{<:Any,2})
     jkr = max(1,min(first(jr),first(kr))-b÷2):max(last(jr),last(kr))+b÷2
     # relationship between jkr and kr, jr
     kr2,jr2 = kr.-first(jkr).+1,jr.-first(jkr).+1
-    lmul!(M.p0, clenshaw(M.c, M.A, M.B, M.C, M.X[jkr, jkr])[kr2,jr2])
+    lmul!(M.p0, clenshaw(M.c, M.A, M.B, M.C, layout_getindex(M.X,jkr, jkr))[kr2,jr2])
 end
 
 function getindex(M::Clenshaw{T}, kr::AbstractUnitRange, j::Integer) where T
