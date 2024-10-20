@@ -204,7 +204,7 @@ function getindex(S::Symmetric{T,<:Clenshaw}, kr::AbstractUnitRange, jr::Abstrac
     return Symmetric(getindex(S.data,1:m,1:m),Symbol(S.uplo))[kr,jr]
 end
 
-transposelayout(M::ClenshawLayout) = LazyBandedMatrices.LazyBandedLayout()
+transposelayout(M::ClenshawLayout) = LazyBandedLayout()
 # TODO: generalise for layout, use Base.PermutedDimsArray
 Base.permutedims(M::Clenshaw{<:Number}) = transpose(M)
 
