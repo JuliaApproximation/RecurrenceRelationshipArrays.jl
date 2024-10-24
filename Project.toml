@@ -1,7 +1,7 @@
 name = "RecurrenceRelationshipArrays"
 uuid = "b889d2dc-af3c-4820-88a8-238fa91d3518"
 authors = ["Sheehan Olver <solver@mac.com>"]
-version = "0.0.2"
+version = "0.1"
 
 [deps]
 ArrayLayouts = "4c555306-a7a7-4459-81d9-ec55ddd5c99a"
