@@ -24,7 +24,7 @@ const RecurrenceMatrix{T, Z<:AbstractVector, A<:AbstractVector, B<:AbstractVecto
 RecurrenceArray(z, A, B, C, data::Array{T,N}, datasize, p0, p1) where {T,N} = RecurrenceArray{T,N,typeof(z),typeof(A),typeof(B),typeof(C)}(z, A, B, C, data, datasize, p0, p1, T[])
 
 function initiateforwardrecurrence(N, A, B, C, x, μ)
-    T = promote_type(eltype(A), eltype(B), eltype(C), typeof(x))
+    T = polynomialtype(eltype(A), eltype(B), eltype(C), typeof(x))
     p0 = convert(T, μ)
     N == 0 && return zero(T), p0
     p1 = convert(T, muladd(A[1],x,B[1])*p0)
