@@ -1,4 +1,6 @@
 using RecurrenceRelationshipArrays, RecurrenceRelationships, FillArrays, LazyArrays, InfiniteArrays, BandedMatrices, LinearAlgebra, Test
+using DynamicPolynomials
+
 
 rec_T = Vcat(1, Fill(2,∞)), Zeros{Int}(∞), Ones{Int}(∞)
 rec_U = Fill(2,∞), Zeros{Int}(∞), Ones{Int}(∞)
@@ -46,4 +48,9 @@ end
         @test r[1:100,:] ≈ r[1:100,1:3] ≈ r[collect(1:100),1:3] ≈ r[1:100,collect(1:3)] ≈ r[collect(1:100),:]
         @test r[100,:] ≈ r[100,1:3]
     end
+end
+
+@testset "DynamicPolynomials" begin
+    @polyvar x
+    @test @inferred(RecurrenceRelationshipArrays.initiateforwardrecurrence(5, rec_T..., x, 1))[2] == 5x - 20x^3 + 16x^5
 end
