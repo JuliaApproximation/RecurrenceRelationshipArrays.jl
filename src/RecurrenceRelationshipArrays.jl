@@ -1,9 +1,10 @@
 module RecurrenceRelationshipArrays
-using LinearAlgebra, InfiniteArrays, LazyArrays, FillArrays, ArrayLayouts, BandedMatrices
+using LinearAlgebra, InfiniteArrays, LazyArrays, FillArrays, ArrayLayouts, BandedMatrices, BlockBandedMatrices
 import LazyArrays: AbstractCachedArray, LazyArrayStyle, AbstractPaddedLayout, resizedata!, zero!, paddeddata
 import Base: axes, size, getindex, broadcasted, copy, view, +, -, Slice, tail
 import FillArrays: AbstractFill, getindex_value
 import BandedMatrices: AbstractBandedMatrix, bandwidths, _BandedMatrix
+import BlockBandedMatrices: AbstractBandedBlockBandedMatrix
 import InfiniteArrays: OneToInf, AbstractInfUnitRange
 import ArrayLayouts: MatMulVecAdd, sublayout, MemoryLayout, sub_materialize, transposelayout, materialize!, _fill_lmul!
 import RecurrenceRelationships: forwardrecurrence_next, forwardrecurrence_partial!, check_clenshaw_recurrences, clenshaw, polynomialtype
