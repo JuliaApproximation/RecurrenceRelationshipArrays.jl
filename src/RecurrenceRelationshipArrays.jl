@@ -4,11 +4,10 @@ import LazyArrays: AbstractCachedArray, LazyArrayStyle, AbstractPaddedLayout, re
 import Base: axes, size, getindex, broadcasted, copy, view, +, -, Slice, tail
 import FillArrays: AbstractFill, getindex_value
 import BandedMatrices: AbstractBandedMatrix, bandwidths, _BandedMatrix
-import BlockBandedMatrices: AbstractBandedBlockBandedMatrix
 import InfiniteArrays: OneToInf, AbstractInfUnitRange
 import ArrayLayouts: MatMulVecAdd, sublayout, MemoryLayout, sub_materialize, transposelayout, materialize!, _fill_lmul!
 import RecurrenceRelationships: forwardrecurrence_next, forwardrecurrence_partial!, check_clenshaw_recurrences, clenshaw, polynomialtype
-export RecurrenceArray, Clenshaw
+export RecurrenceArray, Clenshaw, ClenshawKron
 
 const LazyArraysBandedMatricesExt = Base.get_extension(LazyArrays, :LazyArraysBandedMatricesExt)
 const AbstractLazyBandedLayout = LazyArraysBandedMatricesExt.AbstractLazyBandedLayout

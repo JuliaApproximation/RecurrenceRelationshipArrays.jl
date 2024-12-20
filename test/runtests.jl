@@ -50,6 +50,13 @@ end
     end
 end
 
+@testset "ClenshawKron" begin
+    C = [1 2 3; 4 5 0; 6 0 0]
+    X_U = SymTridiagonal(Fill(0.0,∞), Fill(1/2,∞))
+    ClenshawKron(C, (rec_U, rec_U), (X_U,X_U))
+end
+
+
 @testset "DynamicPolynomials" begin
     @polyvar x
     @test @inferred(RecurrenceRelationshipArrays.initiateforwardrecurrence(5, rec_T..., x, 1))[2] == 5x - 20x^3 + 16x^5

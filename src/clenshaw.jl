@@ -235,24 +235,3 @@ end
 
 LinearAlgebra.dot(x::AbstractVector, A::Clenshaw, y::AbstractVector) = dot(x, mul(A, y))
 
-
-## Clenshaw2D
-
-struct ClenshawRect{T, Coefs<:AbstractMatrix{T}, AA<:NTuple{2,AbstractVector}, BB<:NTuple{2,AbstractVector}, CC<:NTuple{2,AbstractVector}, Jac<:NTuple{2,AbstractMatrix}} <: AbstractBandedBlockBandedMatrix{T}
-    c::Coefs
-    A::AA
-    B::BB
-    C::CC
-    X::Jac
-    p0::T
-end
-
-
-copy(M::ClenshawRect) = M
-size(M::ClenshawRect) = size(M.X[1],1) * size(M.X[2],1)
-axes(M::ClenshawRect) = blockedrange(RangeCumsum(oneto(size(M.X[1],1))))
-blockbandwidths(M::ClenshawRect) = (size(M.c,1)-1,size(M.c,1)-1)
-subblockbandwidths(M::ClenshawRect) = (size(M.c,2)-1,size(M.c,2)-1)
-
-Base.array_summary(io::IO, C::ClenshawRect{T}, inds::Tuple{Vararg{OneToInf{Int}}}) where T =
-    print(io, Base.dims2string(length.(inds)), " ClenshawRect{$T} with $(size(C.c)) polynomial")
