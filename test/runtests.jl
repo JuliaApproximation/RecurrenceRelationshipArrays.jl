@@ -14,6 +14,12 @@ T = (N,z) -> forwardrecurrence(N, rec_T..., z)
     @test C[1:4,1:4] isa BandedMatrix
 end
 
+@testset "clenshaw" begin
+    X = brand(3,3,1,1)
+    @test @inferred(RecurrenceRelationshipArrays.clenshaw(Float64[], [1.],[1.],[1.,2], X)) == zeros(3,3)
+    @test @inferred(RecurrenceRelationshipArrays.clenshaw([2.], [1.],[1.],[1.,2], X)) == 2I(3)
+end
+
 @testset "RecurrenceArray" begin
     @testset "RecurrenceVector" begin()
         for z in (0.1, 1.0)
