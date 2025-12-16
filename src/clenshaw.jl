@@ -83,7 +83,7 @@ function clenshaw(c::AbstractVector, A::AbstractVector, B::AbstractVector, C::Ab
     @boundscheck check_clenshaw_recurrences(N, A, B, C)
     m = size(X,1)
     m == size(X,2) || throw(DimensionMismatch("X must be square"))
-    N == 0 && return zero(T)
+    N == 0 && return zero(X)
     bn2 = _clenshaw_op(MemoryLayout(X), Zeros{T}(m, m), N)
     bn1 = _clenshaw_op(MemoryLayout(X), c[N]*Eye{T}(m), N)
     _clenshaw_op!(c, A, B, C, X, bn1, bn2)
