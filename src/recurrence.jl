@@ -18,7 +18,7 @@ mutable struct RecurrenceArray{T, N, ZZ, AA<:AbstractVector, BB<:AbstractVector,
     u::Vector{T} # used for backsubstitution to store diagonal of U in LU
 end
 
-const RecurrenceVector{T, A<:AbstractVector, B<:AbstractVector, C<:AbstractVector} = RecurrenceArray{T, 1, T, A, B, C}
+const RecurrenceVector{T, Z<:AbstractVector, A<:AbstractVector, B<:AbstractVector, C<:AbstractVector} = RecurrenceArray{T, 1, Z, A, B, C}
 const RecurrenceMatrix{T, Z<:AbstractVector, A<:AbstractVector, B<:AbstractVector, C<:AbstractVector} = RecurrenceArray{T, 2, Z, A, B, C}
 
 RecurrenceArray(z, A, B, C, data::Array{T,N}, datasize, p0, p1) where {T,N} = RecurrenceArray{T,N,typeof(z),typeof(A),typeof(B),typeof(C)}(z, A, B, C, data, datasize, p0, p1, T[])
@@ -40,7 +40,7 @@ function RecurrenceArray(z::Number, (A,B,C), data::AbstractVector{T}) where T
     if iszero(p1)
         p1 = one(p1) # avoid degeneracy in recurrence. Probably needs more thought
     end
-    RecurrenceVector{T,typeof(A),typeof(B),typeof(C)}(z, A, B, C, data, size(data), T[p0], T[p1], T[])
+    RecurrenceVector{T,typeof(z),typeof(A),typeof(B),typeof(C)}(z, A, B, C, data, size(data), T[p0], T[p1], T[])
 end
 
 function RecurrenceArray(z::AbstractVector, (A,B,C), data::AbstractMatrix{T}) where T
