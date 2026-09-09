@@ -18,13 +18,13 @@ mutable struct RecurrenceArray{T, N, ZZ, AA<:AbstractVector, BB<:AbstractVector,
     u::Vector{T} # used for backsubstitution to store diagonal of U in LU
 end
 
-const RecurrenceVector{T, Z<:AbstractVector, A<:AbstractVector, B<:AbstractVector, C<:AbstractVector} = RecurrenceArray{T, 1, Z, A, B, C}
+const RecurrenceVector{T, Z, A<:AbstractVector, B<:AbstractVector, C<:AbstractVector} = RecurrenceArray{T, 1, Z, A, B, C}
 const RecurrenceMatrix{T, Z<:AbstractVector, A<:AbstractVector, B<:AbstractVector, C<:AbstractVector} = RecurrenceArray{T, 2, Z, A, B, C}
 
 RecurrenceArray(z, A, B, C, data::Array{T,N}, datasize, p0, p1) where {T,N} = RecurrenceArray{T,N,typeof(z),typeof(A),typeof(B),typeof(C)}(z, A, B, C, data, datasize, p0, p1, T[])
 
 function initiateforwardrecurrence(N, A, B, C, x, μ)
-    T = polynomialtype(promote_type(eltype(A), eltype(B), eltype(C)), typeof(x))
+    T = polynomialtype(promote_type(eltype(A), eltype(B), eltype(C), typeof(μ)), typeof(x))
     p0 = convert(T, μ)
     N == 0 && return zero(T), p0
     p1 = convert(T, muladd(A[1],x,B[1])*p0)
@@ -36,7 +36,7 @@ end
 
 function RecurrenceArray(z::Number, (A,B,C), data::AbstractVector{T}) where T
     N = length(data)
-    p0, p1 = initiateforwardrecurrence(N, A, B, C, z, one(z))
+    p0, p1 = initiateforwardrecurrence(N, A, B, C, z, one(T))
     if iszero(p1)
         p1 = one(p1) # avoid degeneracy in recurrence. Probably needs more thought
     end
@@ -117,7 +117,7 @@ end
 
 function backwardrecurrence!(K, A, B, C, z, nN::AbstractUnitRange, j...)
     n,N = first(nN),last(nN)
-    T = eltype(z)
+    T = float(promote_type(eltype(z), eltype(A), eltype(B), eltype(C)))
     tol = 100eps(real(T))
     maxiterations = 100_000_000
     data = K.data
